@@ -117,8 +117,10 @@ decisions made in earlier ones.
       the separator is career trajectory (age), not team success
 - [x] Write it up in `docs/DATA_DECISIONS.md` — the pattern, and why a linear model
       cannot capture it
-- [ ] **Optional, if time:** add an interaction feature and measure whether it helps.
-      Either result is a finding.
+- [x] **Optional, if time:** add an interaction feature and measure whether it helps.
+      Either result is a finding. — DONE: win_rate main effect helps (log loss
+      −9%, recall +0.10); per×(wr−.5) interaction adds nothing. Hard errors
+      (trajectory/defence/popularity) unchanged. See DATA_DECISIONS.md
 
 ### Colab port — do this now, not in week 4
 - [ ] Build the thin notebook

@@ -243,9 +243,44 @@ information (dbpm, dws) was deliberately excluded by Decision 5, so no
 weight assignment could recover it — a measured cost of the
 interpretability trade, not a failure of the optimiser.
 
+### Interaction experiment (2026-08-26) — win rate as a feature
+
+Amends the note above: after the error analysis, team win rate WAS tested as
+a model feature in a controlled experiment (minutes-weighted across stints
+for traded players). Three models on identical splits, τ re-chosen on
+validation for each by the same max-F1 procedure:
+
+| Model | Test log loss | PR-AUC | P / R / F1 @ τ |
+|---|---|---|---|
+| A: five features | 0.0848 | 0.836 | 0.742 / 0.679 / 0.709 (τ=0.40) |
+| B: + win_rate | **0.0768** | **0.861** | 0.752 / **0.774** / **0.763** (τ=0.35) |
+| C: + win_rate + per×(wr−.5) | 0.0769 | 0.862 | 0.752 / 0.774 / 0.763 (τ=0.35) |
+
+**Findings:**
+1. **Win rate helps as a main effect** — log loss −9%, +10 true positives
+   (recall 0.679 → 0.774) at equal precision. The weight is +1.02: voters
+   do favour players on winning teams, beyond what the five stats encode.
+2. **The interaction term adds nothing** (weight −0.09, metrics identical
+   to B). The spec's §7.2 story — "production conditional on team success
+   is an interaction the linear model cannot learn" — is doubly refuted:
+   the effect exists but is additive, well inside the hypothesis space.
+3. **The hard errors are untouched.** All 10 model-A false positives remain
+   false positives under B and C, and none of the 10 named false negatives
+   is rescued (Draymond 2022 stays at ŷ=0.001; Wiggins at 0.03). The recall
+   gain comes from borderline cases outside the top-10 lists. Win rate
+   fixes the easy margin, not the trajectory/defence/popularity pattern.
+4. **Interpretability cost:** ws_48 correlates 0.48 with win_rate (win
+   shares are allocated from team wins), and its weight flips from +1.00 to
+   −0.46 when win_rate enters — a sign flip on a "good" stat that must be
+   explained in Q&A if model B is adopted. Centring the interaction at .500
+   kept corr(per, per×wr) at 0.21 (vs 0.77 uncentred).
+
+**Adoption of win_rate into the feature set (and what to do about ws_48) is
+an open amendment to Decision 5 — not yet made.**
+
 ### Follow-up candidates (optional, per tasks.md)
 - An explicit age × production interaction feature, or age-squared, to test
-  whether extending the hypothesis space closes the gap. Either result is a
-  finding.
+  whether extending the hypothesis space closes the trajectory gap. Either
+  result is a finding.
 - Report errors per conference-season: selection competes within a
   conference, which per-row loss ignores.
