@@ -85,15 +85,22 @@ decisions made in earlier ones.
 ## Week 2 — evaluation, and the Criterion C material
 
 ### `src/evaluate.py`
-- [ ] Log loss on train / val / test
-- [ ] Confusion matrix
-- [ ] Precision, recall, F1
+- [x] Log loss on train / val / test — `loss_table()`
+- [x] Confusion matrix — hand-written, verified on a hand-computed example
+- [x] Precision, recall, F1 — zero-division returns 0 (all-negative baseline
+      scores 0/0/0 instead of crashing)
 - [ ] **DECISION 10:** decision threshold τ, with the trade-off documented
-- [ ] PR curve and ROC curve
-- [ ] Calibration table — predicted probability vs observed rate, bucketed
-- [ ] Baselines: majority class, single feature (e.g. VORP alone)
-- [ ] `named_errors()` — top false positives and false negatives **with player names
-      and seasons**
+      *(τ is a required argument everywhere — no default; decision pending
+      until there is a trained model)*
+- [x] PR curve and ROC curve — plus ROC-AUC (trapezoid) and PR-AUC (average
+      precision); verified: perfect ranking → 1.0, random → 0.5 / base rate
+- [x] Calibration table — predicted probability vs observed rate, bucketed;
+      verified on the constant-rate baseline
+- [x] Baselines: constant training-rate probability (log-loss-optimal
+      constant; majority class is its thresholded twin). Single-feature
+      baseline = train.fit() on a one-column X — needs `src/train.py`
+- [x] `named_errors()` — top false positives and false negatives with player
+      names and seasons; row-alignment assert against meta
 
 ### The Criterion C investigation — this is where the marks are
 - [ ] Pull the 10 highest-confidence false positives. What do they have in common?
