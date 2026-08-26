@@ -51,8 +51,13 @@ decisions made in earlier ones.
 
 ### `src/features.py`
 - [ ] **DECISION 5:** feature set. Record the reason for each column
-- [ ] `chronological_split()` — **DECISION 6:** boundaries
-- [ ] `standardise()` — fit on train only. Verify val/test are not used in fitting
+      *(machinery written — `select_features()` takes the list as an argument;
+      the decision itself is pending)*
+- [ ] `chronological_split()` — **DECISION 6:** boundaries *(function written
+      and smoke-tested; boundary choice pending)*
+- [x] `standardise()` — fit on train only. Verify val/test are not used in
+      fitting *(structural: only X_train enters the mean/std computation;
+      smoke test confirms train cols are exactly 0/1 and val cols are not)*
 
 ### `src/model.py` — the core, hand-written
 - [ ] `sigmoid()`
