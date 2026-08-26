@@ -11,12 +11,13 @@ decisions made in earlier ones.
 ## Week 1 — data and model
 
 ### Setup
-- [x] Create repo *(local only — push to GitHub deferred to week 2)*
+- [x] Create repo — public at https://github.com/grishma34/nba-allstar
 - [x] `requirements.txt` — numpy, pandas, matplotlib only
 - [x] Download the three CSVs to `data/` (git-ignored)
-- [ ] Upload the three CSVs somewhere with a stable public URL, for the notebook
-      *(deferred to week 2, alongside the Colab port)*
-- [ ] Record the Kaggle dataset version number in the README
+- [x] Upload the CSVs (now four) with a stable public URL — `data-v1` GitHub
+      release, `nba-data.zip`; notebook bootstrap downloads it at runtime
+- [ ] Record the Kaggle dataset version number in the README — README exists
+      with a TODO placeholder; exact version still needed from the Kaggle page
 
 ### Confirm the data — before writing any code
 - [x] Open `All-Star Selections.csv`. Confirm all six column names, especially the
@@ -126,9 +127,15 @@ decisions made in earlier ones.
 - [x] Build the thin notebook — 17 cells (9 code, 8 markdown); all code cells
       verified executing top-to-bottom locally; Colab setup lines present but
       commented until the repo is pushed and data hosted
-- [ ] Verify it runs from a fresh kernel, top to bottom
-- [ ] Verify the link opens while signed out of Google
-- [ ] Time how long a cold run takes
+- [x] Verify it runs from a fresh kernel, top to bottom — verified from an
+      empty directory using only public unauthenticated URLs (clone + release
+      download); identical metrics reproduced
+- [ ] Verify the link opens while signed out of Google — repo, raw notebook
+      and release verified publicly fetchable unauthenticated; the Colab open
+      (https://colab.research.google.com/github/grishma34/nba-allstar/blob/main/notebooks/allstar.ipynb)
+      still needs one manual signed-out click
+- [x] Time how long a cold run takes — 4.1 s wall time on this machine
+      (clone + data download + full train + eval); expect ~1 min on Colab
 
 **End of week 2: full evaluation, and a named, evidenced failure mode.**
 
