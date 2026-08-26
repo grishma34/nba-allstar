@@ -122,6 +122,46 @@ dataset — no pair above |r| = 0.85 (max 0.81: per ~ ws_48 and per ~ vorp).
 columns (e.g. defensive value in `dbpm`) is unavailable to the model; every fitted
 weight is explainable in one sentence.
 
+### Amendment (2026-08-26): vorp out, win_rate in — final set is six features
+
+**Final feature set: `mp`, `per`, `usg_percent`, `ws_48`, `age`, `win_rate`.**
+
+1. **`vorp` dropped.** It is cumulative, so it partly re-encodes `mp`
+   (r = 0.64) which is already in the set, while `ws_48` carries the same
+   underlying value as a rate. Honesty note: dropping vorp does NOT bring
+   every remaining pair under 0.7 — per ~ ws_48 = 0.81 stays and is retained
+   knowingly as the set's strongest correlation.
+2. **`win_rate` added** (team win rate, minutes-weighted across stints for
+   traded players; source: `Team Summaries.csv`). Adopted on experiment, not
+   assumption — three models on identical splits, τ re-chosen on validation
+   by max-F1 for each:
+
+   | Model | Test log loss | PR-AUC | P / R / F1 |
+   |---|---|---|---|
+   | five features | 0.0848 | 0.836 | 0.742 / 0.679 / 0.709 (τ=0.40) |
+   | + win_rate | **0.0768** | **0.861** | 0.752 / 0.774 / 0.763 (τ=0.35) |
+   | + win_rate + per×(wr−.5) | 0.0769 | 0.862 | 0.752 / 0.774 / 0.763 (τ=0.35) |
+
+   Fitted win_rate weight: +1.02. Log loss −9%, ten additional true
+   positives at slightly better precision.
+3. **Interaction term tested and REJECTED.** per×(win_rate − .5) — centred
+   so it stays interpretable and decorrelated from per (r = 0.21) — earns a
+   weight of −0.09 and changes no metric by more than 0.001. The team-success
+   effect is additive, not an interaction; the spec's §7.2 conjecture is
+   refuted a second way (see the Criterion C section).
+4. **Recorded caveats.** (a) ws_48 correlates 0.48 with win_rate (win shares
+   are allocated from team wins) and its weight flips from +1.00 to −0.46
+   when win_rate enters — the Q&A answer is that ws_48 now contributes the
+   production-vs-team-context *residual*, but dropping ws_48 remains a
+   defensible alternative that was not taken. (b) The ten named false
+   positives and ten named false negatives are unchanged by win_rate — it
+   improves the borderline band, not the hard trajectory/defence/popularity
+   errors.
+5. **Data source consequence:** a fourth CSV, `Team Summaries.csv`, is now a
+   feature source (REQUIREMENTS §2.1 and PROJECT_SPEC §3.6 updated to
+   match). Three files feed player rows and labels; the fourth feeds one
+   team-context column.
+
 ## Decision 6: Split boundaries
 **Date:** 2026-08-26
 **Options considered:** spec suggestion 2000–17 / 2018–21 / 2022–25

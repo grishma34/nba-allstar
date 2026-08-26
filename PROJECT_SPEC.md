@@ -104,10 +104,13 @@ This is the same failure mode as a post-outcome variable in a churn dataset: nea
 perfect association with the target, zero operational value, because the information
 is not available at the moment a prediction would need to be made.
 
-### 3.6 The 19 unused files
+### 3.6 The 18 unused files
 
-Of 22 CSVs in the dataset, three are used. The exclusions fall into three distinct
-categories and this should be stated in the report:
+Of 22 CSVs in the dataset, four are used: three feed player rows and labels, and
+`Team Summaries.csv` feeds one team-context feature (win rate — added by the
+Decision 5 amendment after a controlled experiment) plus the error analysis. The
+exclusions fall into three distinct categories and this should be stated in the
+report:
 
 - **Not relevant** — team totals, opponent statistics, draft history.
 - **Leakage** — award and end-of-season-team files (§3.5).

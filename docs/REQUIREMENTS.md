@@ -66,10 +66,13 @@ Verify by opening the link in a private browsing window while signed out of Goog
 
 Kaggle: "NBA Stats (1947-present)", version 56 or later. Record the version used.
 
-Three files only:
+Four files only:
 - `Advanced.csv` — features
 - `All-Star Selections.csv` — labels
-- `Per 100 Poss.csv` — optional additional features
+- `Per 100 Poss.csv` — optional additional features (not used to date)
+- `Team Summaries.csv` — team win rate, added by the Decision 5 amendment
+  after a controlled experiment (see DATA_DECISIONS.md); also used for the
+  Criterion C error analysis
 
 ### 2.2 Not a toy dataset
 

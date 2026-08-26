@@ -188,7 +188,90 @@ def build_dataset(advanced, allstar, *, season_min=2000, season_max=2025,
     return df
 
 
+def load_team_summaries(data_dir="data"):
+    """
+    Read Team Summaries.csv — the fourth and final CSV, added by the
+    Decision 5 amendment as the source of the team win-rate feature (it
+    also served the Criterion C error analysis). Loaded separately from
+    load_raw() so existing callers keep working.
+
+    Args:
+        data_dir: directory containing the Kaggle CSVs.
+
+    Returns:
+        Raw DataFrame, one row per team-season.
+    """
+    return pd.read_csv(f"{data_dir}/Team Summaries.csv")
+
+
+def add_team_win_rate(df, team_summaries, advanced):
+    """
+    Attach each player-season's team win rate as a feature column.
+
+        win_rate = w / (w + l), minutes-weighted across stints for traded
+        players.
+
+    Why minutes-weighted: a traded player's season (Decision 2 keeps the
+    combined TM row) spans several teams, and voters saw the whole season —
+    so each stint's team quality is weighted by the time actually spent
+    there. For an untraded player the weighted average collapses to their
+    team's plain win rate, so one code path covers everyone.
+
+    Adopted as a feature by the Decision 5 amendment after a controlled
+    experiment (log loss −9%, recall +0.10); the production × win-rate
+    interaction was tested at the same time and rejected.
+
+    Args:
+        df: dataset from build_dataset() — one row per player-season.
+        team_summaries: raw frame from load_team_summaries().
+        advanced: raw Advanced.csv frame — needed for the per-team stint
+                  rows that build_dataset() deliberately dropped, because
+                  the weighting happens over stints.
+
+    Returns:
+        df with a `win_rate` column added. Raises if any player-season
+        cannot be matched to a team — a silent NaN here would poison
+        training (see features.select_features).
+    """
+    seasons = (df["season"].min(), df["season"].max())
+
+    teams = team_summaries.copy()
+    teams = teams[(teams["lg"] == "NBA") & teams["abbreviation"].notna()]
+    teams = teams[teams["season"].between(*seasons)]
+    teams["win_rate"] = teams["w"] / (teams["w"] + teams["l"])
+    team_rates = teams[["season", "abbreviation", "win_rate"]]
+
+    # Per-team stint rows (the combined TM rows carry no team identity).
+    stints = advanced[(advanced["lg"] == "NBA")
+                      & advanced["season"].between(*seasons)]
+    is_combined = stints["team"].str.match(COMBINED_TEAM_PATTERN).fillna(False)
+    stints = stints[~is_combined]
+
+    stints = stints.merge(team_rates, left_on=["season", "team"],
+                          right_on=["season", "abbreviation"], how="left")
+    assert not stints["win_rate"].isna().any(), (
+        "a stint team abbreviation has no Team Summaries row — "
+        "the two files disagree about team codes")
+
+    # Minutes-weighted mean win rate per player-season:
+    #   Σ(win_rate · mp) / Σ(mp) over that player's stints.
+    stints = stints.assign(weighted=stints["win_rate"] * stints["mp"])
+    per_player = stints.groupby(["player_id", "season"]).agg(
+        weighted_sum=("weighted", "sum"), minutes_sum=("mp", "sum"))
+    per_player["win_rate"] = (per_player["weighted_sum"]
+                              / per_player["minutes_sum"])
+
+    out = df.merge(per_player[["win_rate"]], on=["player_id", "season"],
+                   how="left")
+    assert not out["win_rate"].isna().any(), (
+        "a player-season has no win rate — stint rows missing or key mismatch")
+    return out
+
+
 if __name__ == "__main__":
     # Quick verification run: python -m src.data (from the repo root)
     advanced, allstar, per100 = load_raw("data")
     dataset = build_dataset(advanced, allstar)
+    dataset = add_team_win_rate(dataset, load_team_summaries("data"), advanced)
+    print(f"win_rate attached: min {dataset['win_rate'].min():.3f}, "
+          f"max {dataset['win_rate'].max():.3f}, no NaNs")
