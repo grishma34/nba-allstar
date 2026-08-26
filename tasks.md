@@ -33,15 +33,21 @@ decisions made in earlier ones.
       24–28 per season
 
 ### `src/data.py`
-- [ ] `load_raw()`
-- [ ] Filter `lg == "NBA"`
-- [ ] Filter seasons 2000–2025
-- [ ] **DECISION 2:** resolve multi-team rows. Record in DATA_DECISIONS.md
-- [ ] **DECISION 3:** eligibility threshold. Record it
-- [ ] **DECISION 1:** replacement All-Stars. Record it
-- [ ] Join labels on `player_id` + `season` → `y`
-- [ ] Assertion: no player-season with `g > 82`
-- [ ] Print class balance — expect roughly 5% positive
+- [x] `load_raw()`
+- [x] Filter `lg == "NBA"`
+- [x] Filter seasons 2000–2025
+- [x] **DECISION 2:** resolve multi-team rows — keep combined `^\d+TM$` row,
+      drop stints. Recorded in DATA_DECISIONS.md
+- [x] **DECISION 3:** eligibility threshold — mp ≥ 500; drops 4 named All-Stars,
+      reported at run time. Recorded
+- [x] **DECISION 1:** replacement All-Stars — all 677 labelled y=1; `replaced`
+      marks the player who WAS replaced, not the appointee. Recorded
+- [x] Join labels on `player_id` + `season` → `y` (all 677 match; hard error
+      if any selection has no stats row)
+- [x] Assertion: one row per (player_id, season); no *single-team* row with
+      `g > 82` — combined TM rows can legitimately reach 85 (see Decision 2)
+- [x] Print class balance — 8,869 rows, 673 positive (7.6% after eligibility;
+      5.3% before)
 
 ### `src/features.py`
 - [ ] **DECISION 5:** feature set. Record the reason for each column

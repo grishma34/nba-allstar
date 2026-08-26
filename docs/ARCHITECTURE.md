@@ -119,10 +119,15 @@ Keep these signatures stable — the notebook and the tests depend on them.
 load_raw(data_dir: str) -> tuple[DataFrame, DataFrame, DataFrame]
     """Read the three CSVs. No transformation."""
 
-build_dataset(advanced, allstar, per100, *, season_min, season_max,
-              min_games, include_replacements) -> DataFrame
-    """Filter, resolve multi-team rows, join labels.
-    Returns one row per eligible player-season with a `y` column."""
+build_dataset(advanced, allstar, *, season_min, season_max,
+              min_minutes, verbose) -> DataFrame
+    """Filter, resolve multi-team rows, join labels, apply eligibility.
+    Returns one row per eligible player-season with `y` and `replaced`
+    columns. Signature reflects Decisions 1-3: the threshold is minutes-
+    based, and there is no include_replacements switch — all named
+    All-Stars are y=1 (the replaced flag cannot identify appointees).
+    Per 100 Poss.csv is not consumed here; whether its columns join the
+    feature set is Decision 5."""
 ```
 
 ### `features.py`
