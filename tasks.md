@@ -73,10 +73,14 @@ decisions made in earlier ones.
 - [ ] loss decreases on a small separable synthetic dataset
 
 ### `src/train.py`
-- [ ] `fit()` — gradient descent loop
-- [ ] Record train and validation loss per iteration
-- [ ] **DECISION 7:** learning rate — try several, record what happened at each
-- [ ] **DECISION 8:** iterations / early stopping
+- [x] `fit()` — gradient descent loop (batch GD, w=0 start, optional L2)
+- [x] Record train and validation loss per iteration
+- [ ] **DECISION 7:** learning rate — swept 0.01–10.0; 0.1–3.0 all converge
+      to the same optimum (convex loss), 10.0 oscillates. lr=1.0 used
+      provisionally — *record pending user sign-off*
+- [ ] **DECISION 8:** iterations — val loss bottoms at ~iter 457 (0.09628)
+      then drifts up to 0.09715 (mild overfit); n_iters=5000 used
+      provisionally — early stopping worth discussing. *Pending sign-off*
 
 **End of week 1: a model that trains and a loss curve that goes down.**
 
