@@ -96,13 +96,46 @@ approximately constant.
 earlier eras.
 
 ## Decision 5: Feature set
-**Chosen:**
+**Date:** 2026-08-26
+**Options considered:** (a) all 11 spec candidates; (b) one column per concept;
+(c) either plus Per 100 Poss counting stats
+**Chosen:** (b) — six features: `mp`, `per`, `usg_percent`, `ws_48`, `vorp`, `age`.
 **Reason for each column:**
-**Excluded and why:**
+- `mp` — availability/visibility: selection requires being on the floor; subsumes
+  `g` and `gs` (gs ~ mp r = 0.82)
+- `per` — per-minute production quality (efficiency)
+- `usg_percent` — offensive role and prominence
+- `ws_48` — rate-based value estimate
+- `vorp` — cumulative value over the season
+- `age` — career arc / reputation proxy
+**Excluded and why:** `ws`, `bpm`, `obpm`, `dbpm` are correlated composites of the
+same production already carried by `ws_48` and `vorp` (measured: vorp ~ bpm
+r = 0.92, vorp ~ ws r = 0.92, ws ~ ws_48 r = 0.83, bpm ~ per r = 0.86); including
+them gives unstable, uninterpretable coefficients in a linear model. Component
+percentages (`orb_percent`, `stl_percent`, `tov_percent`, `x3p_ar`, `f_tr`, etc.)
+describe playing style rather than value. Per 100 Poss columns not joined: the
+per-X files are redundant encodings of the same production (spec §3.6), and using
+one would undercut the stated reason for excluding the others.
+**Verification before committing:** correlation matrix of the six on the built
+dataset — no pair above |r| = 0.85 (max 0.81: per ~ ws_48 and per ~ vorp).
+**Consequence / what this costs:** any signal genuinely unique to the excluded
+columns (e.g. defensive value in `dbpm`) is unavailable to the model; every fitted
+weight is explainable in one sentence.
 
 ## Decision 6: Split boundaries
-**Chosen:**
-**Reason:**
+**Date:** 2026-08-26
+**Options considered:** spec suggestion 2000–17 / 2018–21 / 2022–25
+(5,977 / 1,415 / 1,477 rows; 460 / 107 / 106 positives) vs a later split
+2000–19 / 2020–22 / 2023–25 (6,691 / 1,076 / 1,102 rows; 515 / 79 / 79 positives)
+**Chosen:** the spec suggestion — train 2000–2017, validation 2018–2021,
+test 2022–2025.
+**Reason:** validation drives the decision threshold (Decision 10) and early
+stopping (Decision 8), and ~107 positives is already thin; dropping to 79 makes
+those estimates noisier. Extra training positives help a linear model less than
+stable validation helps the evaluation.
+**Consequence / what this costs:** 55 fewer training positives than the later
+split; the test window ends at 2025, so conclusions are about the current
+selection era.
 
 ## Decision 7: Learning rate
 **Values tried:**

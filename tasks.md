@@ -50,11 +50,10 @@ decisions made in earlier ones.
       5.3% before)
 
 ### `src/features.py`
-- [ ] **DECISION 5:** feature set. Record the reason for each column
-      *(machinery written — `select_features()` takes the list as an argument;
-      the decision itself is pending)*
-- [ ] `chronological_split()` — **DECISION 6:** boundaries *(function written
-      and smoke-tested; boundary choice pending)*
+- [x] **DECISION 5:** feature set — mp, per, usg_percent, ws_48, vorp, age
+      (one per concept; all pairs |r| ≤ 0.81, verified). Recorded
+- [x] `chronological_split()` — **DECISION 6:** 2000–17 / 2018–21 / 2022–25
+      (spec suggestion; keeps val at 107 positives). Recorded
 - [x] `standardise()` — fit on train only. Verify val/test are not used in
       fitting *(structural: only X_train enters the mean/std computation;
       smoke test confirms train cols are exactly 0/1 and val cols are not)*
