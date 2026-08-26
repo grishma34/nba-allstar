@@ -107,10 +107,15 @@ decisions made in earlier ones.
       names and seasons; row-alignment assert against meta
 
 ### The Criterion C investigation — this is where the marks are
-- [ ] Pull the 10 highest-confidence false positives. What do they have in common?
-- [ ] Pull the 10 highest-confidence false negatives. Same question.
-- [ ] Test the hypothesis: is team success the missing variable?
-- [ ] Write it up in `docs/DATA_DECISIONS.md` — the pattern, and why a linear model
+- [x] Pull the 10 highest-confidence false positives. What do they have in common?
+      — established stars, mean age 30.1, 7/10 played ≤ 64 games
+- [x] Pull the 10 highest-confidence false negatives. Same question.
+      — ascending young stars (mean age 24.3) + defensive picks + one
+      fan-vote starter
+- [x] Test the hypothesis: is team success the missing variable? — **NO.**
+      FP mean win rate .552 vs FN .556, U = 58/100. Hypothesis refuted;
+      the separator is career trajectory (age), not team success
+- [x] Write it up in `docs/DATA_DECISIONS.md` — the pattern, and why a linear model
       cannot capture it
 - [ ] **Optional, if time:** add an interaction feature and measure whether it helps.
       Either result is a finding.

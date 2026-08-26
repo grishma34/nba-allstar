@@ -161,12 +161,91 @@ selection era.
 
 ## Criterion C investigation
 
+**Date:** 2026-08-26. Model: five features (mp, per, usg_percent, ws_48, age),
+lr=1.0, 5000 iters, τ=0.40 chosen on validation. Test split 2022–2025.
+Team win rates come from `Team Summaries.csv` — used for ERROR ANALYSIS ONLY,
+never as a model feature (state this in the journal: three files feed the
+model, a fourth is read to study its errors).
+
 ### High-confidence false positives
-(top 10, with names and seasons)
+(top 10, descending ŷ; win rate is the player's team, minutes-weighted for 2TM)
+
+| Player | Season | ŷ | Team win rate | Age | G |
+|---|---|---|---|---|---|
+| Jimmy Butler | 2023 | 0.98 | .537 | 33 | 64 |
+| Anthony Davis | 2023 | 0.94 | .524 | 29 | 56 |
+| Domantas Sabonis | 2024 | 0.80 | .561 | 27 | 82 |
+| DeMar DeRozan | 2024 | 0.78 | .476 | 34 | 79 |
+| Luka Dončić | 2025 | 0.73 | .550 (DAL+LAL) | 25 | 50 |
+| Jimmy Butler | 2024 | 0.70 | .561 | 34 | 60 |
+| Trae Young | 2023 | 0.70 | .500 | 24 | 73 |
+| Kawhi Leonard | 2023 | 0.67 | .537 | 31 | 52 |
+| James Harden | 2023 | 0.63 | .659 | 33 | 58 |
+| Kyrie Irving | 2024 | 0.60 | .610 | 31 | 58 |
 
 ### High-confidence false negatives
-(top 10, with names and seasons)
+(top 10, ascending ŷ)
+
+| Player | Season | ŷ | Team win rate | Age | Note |
+|---|---|---|---|---|---|
+| Draymond Green | 2022 | 0.001 | .646 | 31 | replaced=True; dbpm 4.6 |
+| Andrew Wiggins | 2022 | 0.02 | .646 | 26 | fan-vote STARTER |
+| Scottie Barnes | 2024 | 0.04 | .305 | 22 | |
+| Fred VanVleet | 2022 | 0.10 | .585 | 27 | |
+| Jarrett Allen | 2022 | 0.12 | .537 | 23 | |
+| Anthony Edwards | 2023 | 0.12 | .512 | 21 | |
+| Julius Randle | 2024 | 0.13 | .610 | 29 | replaced=True |
+| Jaren Jackson Jr. | 2023 | 0.14 | .622 | 23 | dbpm 2.0 |
+| LaMelo Ball | 2022 | 0.14 | .524 | 20 | |
+| Paolo Banchero | 2024 | 0.16 | .573 | 21 | |
 
 ### Pattern observed
 
+**The team-success hypothesis (PROJECT_SPEC §7.2) is REFUTED on this data.**
+Win rate does not separate the groups: false positives mean .552 (8/10 above
+.500), false negatives mean .556 (9/10 above .500); hand-computed
+Mann-Whitney U = 58/100 where 50 means no separation. Both groups sit between
+the test-split means for non-All-Stars (.483) and All-Stars (.594). The
+predicted failure mode — "elite production on losing teams, predicted highly,
+not selected" — does not describe these errors: 8 of 10 false positives were
+on playoff teams.
+
+What actually separates the groups is **career trajectory**:
+
+- False positives average **age 30.1** — established stars (Butler, DeRozan,
+  Kawhi, Harden, Kyrie) putting up All-Star-calibre full-season numbers in
+  seasons the voters passed them over. Secondary signal: games played —
+  FP group 50–64 games for 7 of 10 vs a true-positive median of 69.
+  Selection happens MID-season; a full-season stat line partly built after
+  the break is invisible to February voters (the temporal-leakage issue of
+  REQUIREMENTS §2.4 surfacing as a concrete error pattern).
+- False negatives average **age 24.3** — ascending young stars (Edwards,
+  Barnes, LaMelo, Banchero, ages 20–22) selected on trajectory and
+  narrative with production the model reads as ordinary (group mean PER
+  18.4 vs 24.3 for true positives; ws_48 0.12 vs 0.19), plus two
+  defence-first selections (Draymond dbpm 4.6, JJJ 2.0) whose value sits
+  partly in the defensive columns Decision 5 excluded, and one popularity
+  pick (Wiggins, voted starter).
+
 ### Why the model cannot capture it
+
+The model's fitted age weight is +0.59: globally, being older goes with
+selection because veterans have the minutes and production. But at the
+decision boundary the effect runs the OTHER way — young players are selected
+ahead of their current-season numbers, old players are held to a higher bar.
+A single linear term must be monotone: one sign of one weight for all
+players. "Age helps through the accumulation of production, but hurts at the
+margin relative to trajectory" is an interaction (age × production, or a
+non-monotone transform of age), and interactions are outside the hypothesis
+space of a linear model unless constructed explicitly as features
+(PROJECT_SPEC §5). The defensive selections are a second, simpler gap: the
+information (dbpm, dws) was deliberately excluded by Decision 5, so no
+weight assignment could recover it — a measured cost of the
+interpretability trade, not a failure of the optimiser.
+
+### Follow-up candidates (optional, per tasks.md)
+- An explicit age × production interaction feature, or age-squared, to test
+  whether extending the hypothesis space closes the gap. Either result is a
+  finding.
+- Report errors per conference-season: selection competes within a
+  conference, which per-row loss ignores.
