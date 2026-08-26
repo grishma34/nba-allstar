@@ -1,0 +1,5 @@
+# Permitted libraries only — see docs/REQUIREMENTS.md §1.2.
+# No sklearn, no statsmodels, no scipy: the learning algorithm is hand-written.
+numpy
+pandas
+matplotlib

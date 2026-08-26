@@ -11,20 +11,26 @@ decisions made in earlier ones.
 ## Week 1 — data and model
 
 ### Setup
-- [ ] Create repo, push to GitHub
-- [ ] `requirements.txt` — numpy, pandas, matplotlib only
-- [ ] Download the three CSVs to `data/` (git-ignored)
+- [x] Create repo *(local only — push to GitHub deferred to week 2)*
+- [x] `requirements.txt` — numpy, pandas, matplotlib only
+- [x] Download the three CSVs to `data/` (git-ignored)
 - [ ] Upload the three CSVs somewhere with a stable public URL, for the notebook
+      *(deferred to week 2, alongside the Colab port)*
 - [ ] Record the Kaggle dataset version number in the README
 
 ### Confirm the data — before writing any code
-- [ ] Open `All-Star Selections.csv`. Confirm all six column names, especially the
-      boolean one (`replaced`?)
-- [ ] Open `Advanced.csv`. List all 30 columns
-- [ ] Check whether `All-Star Selections.csv` uses the same `player_id` slug format
-      as `Advanced.csv`
-- [ ] Count rows per season after filtering to NBA and 2000–2025
-- [ ] Count All-Star selections per season — expect roughly 24–30
+- [x] Open `All-Star Selections.csv`. Confirm all six column names, especially the
+      boolean one (`replaced`?) — confirmed: `player, player_id, team, season, lg,
+      replaced`. `replaced` is True for 81 of 677 filtered selections (12%)
+- [x] Open `Advanced.csv`. List all 30 columns — confirmed, includes all candidate
+      features from PROJECT_SPEC §3.3
+- [x] Check whether `All-Star Selections.csv` uses the same `player_id` slug format
+      as `Advanced.csv` — confirmed
+- [x] Count rows per season after filtering to NBA and 2000–2025 — 15,893 rows total;
+      1,561 are 2TM/3TM combined rows (9.8%); max g is 85 overall, 82 excluding TM
+      rows. Missing values: ts_percent 92; per/usg_percent/ws_48/bpm 5 each
+- [x] Count All-Star selections per season — 677 total (4.3% positive), roughly
+      24–28 per season
 
 ### `src/data.py`
 - [ ] `load_raw()`
