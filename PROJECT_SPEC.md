@@ -77,10 +77,13 @@ Confirm exact column names against the downloaded file before committing.
    - 2026 is the current season and incomplete.
    - Selection format has changed materially over 75 years; a narrower window keeps
      the label meaning roughly constant.
-3. **Multi-team seasons.** `team == "2TM"` (or `3TM`) marks a combined row for a
-   traded player, alongside per-team rows. **Keep the combined row, drop the
-   per-team rows.** Rationale: All-Star selection considers the whole season, not a
-   partial stint. Sanity check after this step: no player-season should have `g > 82`.
+3. **Multi-team seasons.** A team value matching `^\d+TM$` (2TM through 5TM all
+   occur) marks a combined row for a traded player, alongside per-team rows.
+   **Keep the combined row, drop the per-team rows.** Rationale: All-Star selection
+   considers the whole season, not a partial stint. Sanity checks after this step:
+   exactly one row per (player_id, season), and no *single-team* row with `g > 82`.
+   Combined rows can legitimately reach g = 85, because the two teams' schedules
+   are offset at trade time.
 4. **Eligibility filter.** Minimum games and/or minutes threshold. State the value
    chosen and why. This removes players with negligible playing time whose advanced
    statistics are unstable on tiny samples.
@@ -136,19 +139,23 @@ choice must be justified against precision/recall, not assumed.
 
 ### 4.3 Label definition
 
-From `All-Star Selections.csv`. Columns observed: `player`, `player_id`, `team`,
-`season`, `lg`, and a sixth boolean column (appears to be `replaced` — **confirm on
-download**).
+From `All-Star Selections.csv`. Columns confirmed against the downloaded file:
+`player`, `player_id`, `team`, `season`, `lg`, `replaced`.
 
-**Design decision required:** does an injury replacement count as a positive label?
+**`replaced` marks the originally selected player who was replaced** (usually
+through injury) — *not* the replacement. Verified against a known case: in 2020,
+Devin Booker was appointed as the injury replacement for Damian Lillard; the data
+shows Lillard with `replaced = True` and Booker with `replaced = False`.
+Commissioner-appointed replacements are therefore indistinguishable from ordinary
+selections in this file, and the originally proposed option of excluding
+appointees is not implementable with this data.
 
-Both answers are defensible and the choice must be stated and justified:
-- **Include replacements** — they were named All-Stars; the honour is recorded.
-- **Exclude replacements** — they were appointed by the commissioner, not voted in.
-  Different mechanism, arguably a different signal.
-
-A player-season present in this file (subject to the above) is labelled `y = 1`.
-Every other eligible player-season in the filtered set is `y = 0`.
+**Decision 1 (see `docs/DATA_DECISIONS.md`):** every player-season present in this
+file is labelled `y = 1` — the label means "was named an All-Star that season".
+Every other eligible player-season in the filtered set is `y = 0`. The positive
+class consequently mixes voted-in players, injured selectees and appointed
+replacements; this label ambiguity is acknowledged in the journal's Limitations
+section.
 
 ---
 
