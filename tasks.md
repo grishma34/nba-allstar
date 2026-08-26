@@ -59,10 +59,11 @@ decisions made in earlier ones.
       smoke test confirms train cols are exactly 0/1 and val cols are not)*
 
 ### `src/model.py` — the core, hand-written
-- [ ] `sigmoid()`
-- [ ] `predict_proba()`
-- [ ] `log_loss()` with eps clipping
-- [ ] `gradients()` — with the derivation in the docstring
+- [x] `sigmoid()` — with z clipped to ±500 to avoid float64 overflow warnings
+- [x] `predict_proba()`
+- [x] `log_loss()` with eps clipping — verified finite on exact 0/1 inputs
+- [x] `gradients()` — with the derivation in the docstring; spot-checked
+      against finite differences (agreement ~1e-8, formal test to follow)
 
 ### `tests/test_model.py`
 - [ ] sigmoid boundaries
