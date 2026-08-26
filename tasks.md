@@ -123,7 +123,9 @@ decisions made in earlier ones.
       (trajectory/defence/popularity) unchanged. See DATA_DECISIONS.md
 
 ### Colab port — do this now, not in week 4
-- [ ] Build the thin notebook
+- [x] Build the thin notebook — 17 cells (9 code, 8 markdown); all code cells
+      verified executing top-to-bottom locally; Colab setup lines present but
+      commented until the repo is pushed and data hosted
 - [ ] Verify it runs from a fresh kernel, top to bottom
 - [ ] Verify the link opens while signed out of Google
 - [ ] Time how long a cold run takes
