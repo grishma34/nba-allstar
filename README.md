@@ -28,11 +28,15 @@ python -m src.data                     # build + verify the dataset
 
 ## Data
 
-Kaggle "NBA Stats (1947–present)" — dataset version: **56+ (TODO: confirm the
-exact version number from the Kaggle download page)**.
+**Source and credit:** [NBA Stats (1947–present)](https://www.kaggle.com/datasets/sumitrodatta/nba-aba-baa-stats)
+by **Sumitro Datta**, published on Kaggle (data originally scraped from
+[Basketball-Reference](https://www.basketball-reference.com/)). See the Kaggle
+page for licence terms. Dataset version used: **56+ (TODO: confirm the exact
+version number from the Kaggle download page)**.
 
 Four of the 22 CSVs are used: `Advanced.csv` (features),
 `All-Star Selections.csv` (labels), `Team Summaries.csv` (team win rate),
 `Per 100 Poss.csv` (loaded, unused to date). A snapshot of these four is
-attached to the `data-v1` GitHub release so the notebook is reproducible at a
-pinned data version; the CSVs themselves are git-ignored.
+attached to the [`data-v1` release](https://github.com/grishma34/nba-allstar/releases/tag/data-v1)
+so the notebook downloads from a stable URL and stays reproducible at a pinned
+data version; the CSVs themselves are git-ignored.
