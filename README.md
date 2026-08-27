@@ -32,8 +32,7 @@ python -m pytest tests/                # 30 unit tests (pure logic, no CSVs need
 **Source and credit:** [NBA Stats (1947–present)](https://www.kaggle.com/datasets/sumitrodatta/nba-aba-baa-stats)
 by **Sumitro Datta**, published on Kaggle (data originally scraped from
 [Basketball-Reference](https://www.basketball-reference.com/)). See the Kaggle
-page for licence terms. Dataset version used: **56+ (TODO: confirm the exact
-version number from the Kaggle download page)**.
+page for licence terms. Dataset version used: **56**.
 
 Three of the 22 CSVs are used: `Advanced.csv` (features),
 `All-Star Selections.csv` (labels), and `Team Summaries.csv` (team win rate).
