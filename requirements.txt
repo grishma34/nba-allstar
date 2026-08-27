@@ -3,3 +3,4 @@
 numpy
 pandas
 matplotlib
+pytest  # test runner only — plays no part in the model or the metrics
