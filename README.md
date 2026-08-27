@@ -22,8 +22,9 @@ if needed): [`notebooks/allstar.ipynb`](notebooks/allstar.ipynb)
 
 ```bash
 pip install -r requirements.txt        # numpy, pandas, matplotlib — nothing else
-# put the four CSVs in data/ (or let the notebook download them), then e.g.
+# put the three CSVs in data/ (or let the notebook download them), then e.g.
 python -m src.data                     # build + verify the dataset
+python -m pytest tests/                # 30 unit tests (pure logic, no CSVs needed)
 ```
 
 ## Data
@@ -34,9 +35,11 @@ by **Sumitro Datta**, published on Kaggle (data originally scraped from
 page for licence terms. Dataset version used: **56+ (TODO: confirm the exact
 version number from the Kaggle download page)**.
 
-Four of the 22 CSVs are used: `Advanced.csv` (features),
-`All-Star Selections.csv` (labels), `Team Summaries.csv` (team win rate),
-`Per 100 Poss.csv` (loaded, unused to date). A snapshot of these four is
-attached to the [`data-v1` release](https://github.com/grishma34/nba-allstar/releases/tag/data-v1)
-so the notebook downloads from a stable URL and stays reproducible at a pinned
-data version; the CSVs themselves are git-ignored.
+Three of the 22 CSVs are used: `Advanced.csv` (features),
+`All-Star Selections.csv` (labels), and `Team Summaries.csv` (team win rate).
+The [`data-v1` release](https://github.com/grishma34/nba-allstar/releases/tag/data-v1)
+snapshot also contains `Per 100 Poss.csv`, kept while the feature set was
+still an open decision; the final set takes nothing from it and the code no
+longer reads it. The notebook downloads the snapshot from the release so it
+stays reproducible at a pinned data version; the CSVs themselves are
+git-ignored.

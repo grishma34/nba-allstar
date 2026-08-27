@@ -21,24 +21,27 @@ COMBINED_TEAM_PATTERN = r"^\d+TM$"
 
 def load_raw(data_dir="data"):
     """
-    Read the three CSVs exactly as downloaded, with no transformation.
+    Read the two player-level CSVs exactly as downloaded, with no
+    transformation. (Team Summaries.csv has its own loader,
+    load_team_summaries, because it feeds a team-level join rather than
+    player rows.)
 
     Loading is kept separate from cleaning so that every change made to the
     data afterwards happens in build_dataset(), where it is explicit,
     inspectable, and traceable to a recorded decision.
 
     Args:
-        data_dir: directory containing the three Kaggle CSVs.
+        data_dir: directory containing the Kaggle CSVs.
 
     Returns:
-        (advanced, allstar, per100) — raw DataFrames.
-        per100 is loaded for completeness but not consumed yet: whether any
-        of its columns join the feature set is Decision 5, not yet made.
+        (advanced, allstar) — raw DataFrames. Advanced.csv is the feature
+        source, All-Star Selections.csv the label source. Per 100 Poss.csv
+        was loaded here while Decision 5 (the feature set) was open; the
+        decision took no columns from it, so it is no longer read.
     """
     advanced = pd.read_csv(f"{data_dir}/Advanced.csv")
     allstar = pd.read_csv(f"{data_dir}/All-Star Selections.csv")
-    per100 = pd.read_csv(f"{data_dir}/Per 100 Poss.csv")
-    return advanced, allstar, per100
+    return advanced, allstar
 
 
 def build_dataset(advanced, allstar, *, season_min=2000, season_max=2025,
@@ -270,7 +273,7 @@ def add_team_win_rate(df, team_summaries, advanced):
 
 if __name__ == "__main__":
     # Quick verification run: python -m src.data (from the repo root)
-    advanced, allstar, per100 = load_raw("data")
+    advanced, allstar = load_raw("data")
     dataset = build_dataset(advanced, allstar)
     dataset = add_team_win_rate(dataset, load_team_summaries("data"), advanced)
     print(f"win_rate attached: min {dataset['win_rate'].min():.3f}, "

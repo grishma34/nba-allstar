@@ -144,7 +144,7 @@ if __name__ == "__main__":
     # still open in docs/DATA_DECISIONS.md.
     from src.data import load_raw, build_dataset
 
-    advanced, allstar, _ = load_raw("data")
+    advanced, allstar = load_raw("data")
     dataset = build_dataset(advanced, allstar, verbose=False)
 
     smoke_cols = ["g", "gs", "mp", "per", "ts_percent", "usg_percent",
